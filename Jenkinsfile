@@ -37,6 +37,7 @@ pipeline {
                            -Dsonar.projectName='java-jenkins-automation-pipeline' \
                            -Dsonar.host.url=http://localhost:9000 \
                            -Dsonar.login=%SONAR_TOKEN%
+                           -Dsonar.jacoco.reportPaths=target/jacoco.xml
                         """
                     }
                 }

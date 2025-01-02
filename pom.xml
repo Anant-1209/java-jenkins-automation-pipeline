@@ -14,6 +14,8 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <junit.version>5.9.2</junit.version>
+        <!-- SonarQube Coverage Report Path -->
+        <sonar.jacoco.reportPaths>target/jacoco.xml</sonar.jacoco.reportPaths>
     </properties>
 
     <dependencies>
@@ -71,6 +73,20 @@
                         <goals>
                             <goal>prepare-agent</goal> <!-- Prepares the JaCoCo agent for coverage -->
                             <goal>report</goal> <!-- Generates code coverage report -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- SonarQube Plugin for Analysis -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.1.2184</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>sonar</goal> <!-- SonarQube analysis goal -->
                         </goals>
                     </execution>
                 </executions>
