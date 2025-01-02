@@ -1,64 +1,55 @@
 pipeline {
     agent any
 
-    tools {
-        // Specifying the tools to use for the pipeline (Maven & JDK)
-        maven 'Maven 3.8.1'  // Use your version of Maven configured on Jenkins
-        jdk 'JDK 11'         // Specify the Java version
-    }
-
     environment {
-        // Path to the ChromeDriver (adjust accordingly)
-        CHROME_DRIVER_PATH = "C:\\Program Files\\chromedriver-win64\\chromedriver-win64"
+        SONAR_SCANNER_PATH = 'C:\\Program Files\\sonar-scanner-6.2.1.4610-windows-x64\\bin'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from your repository
-                git 'https://github.com/Anant-1209/java-jenkins-automation-pipeline.git'
+                checkout scm
             }
         }
 
-        stage('Build') {
+        stage('Build and Test') {
             steps {
                 script {
-                    // Run the Maven build
-                    sh 'mvn clean install'
+                    def mvnHome = tool 'Maven3' // Use the Maven tool configured in Jenkins
+                    withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
+                        bat 'mvn clean verify'
+                    }
                 }
             }
         }
 
-        stage('Test') {
+        stage('Sonar Analysis') {
+            environment {
+                SONAR_TOKEN = credentials('java-jenkins-automation-pipeline') // Ensure the correct credential ID
+            }
             steps {
                 script {
-                    // Run the Maven test
-                    sh 'mvn test'
+                    def mvnHome = tool 'Maven3' // Use the Maven tool configured in Jenkins
+                    withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
+                        bat """
+                       mvn clean verify sonar:sonar \
+  -Dsonar.projectKey=java-jenkins-automation-pipeline \
+  -Dsonar.projectName='java-jenkins-automation-pipeline' \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.login=%SONAR_TOKEN%
+                        """
+                    }
                 }
-            }
-        }
-
-        stage('Archive Results') {
-            steps {
-                // Archive test results (You can specify different location or log files)
-                archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
-                junit '**/target/test-*.xml'  // Include JUnit test reports
             }
         }
     }
 
     post {
-        always {
-            // Clean up any running processes or artifacts if needed
-            cleanWs()
-        }
         success {
-            // Actions to take if the pipeline succeeds
-            echo 'Pipeline executed successfully.'
+            echo 'Pipeline executed successfully!'
         }
         failure {
-            // Actions to take if the pipeline fails
-            echo 'Pipeline failed.'
+            echo 'Pipeline failed!'
         }
     }
 }
