@@ -17,19 +17,19 @@ pipeline {
                 script {
                     def mvnHome = tool 'Maven3' // Use the Maven tool configured in Jenkins
                     withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
-                        bat 'mvn clean install' // Ensure that the build and tests run first
+                        bat 'mvn clean test' // Run tests
                     }
                 }
             }
         }
 
-        stage('Sonar Analysis') {
+        stage('SonarQube Analysis') {
             environment {
                 SONAR_TOKEN = credentials('java-jenkins-automation-pipeline') // Ensure the correct credential ID
             }
             steps {
                 script {
-                    def mvnHome = tool 'Maven3' // Use the Maven tool configured in Jenkins
+                    def mvnHome = tool 'Maven3'
                     withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
                         bat """
                            mvn sonar:sonar \
@@ -47,27 +47,23 @@ pipeline {
         stage('Generate JaCoCo Coverage Report') {
             steps {
                 script {
-                    // Generate JaCoCo coverage report after tests have run
                     def mvnHome = tool 'Maven3'
                     withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
-                        bat 'mvn clean install jacoco:prepare-agent jacoco:report' // Ensure the classes are compiled and coverage is generated
+                        bat 'mvn verify jacoco:report' // Generate code coverage report
                     }
                 }
             }
         }
 
-        stage('Publish JaCoCo Coverage') {
+        stage('Publish Coverage Report') {
             steps {
-                script {
-                    // Publish the JaCoCo code coverage report in Jenkins
-                    jacoco(
-                        execPattern: '**/target/jacoco.exec', // JaCoCo execution file pattern
-                        classPattern: '**/target/classes', // Classes directory pattern
-                        sourcePattern: '**/src/test/java', // Source code directory pattern
-                        inclusionPattern: '**/*.java', // Include Java files
-                        exclusionPattern: '**/test/**' // Exclude test files
-                    )
-                }
+                jacoco(
+                    execPattern: '**/target/jacoco.exec',
+                    classPattern: '**/target/classes',
+                    sourcePattern: '**/src/main/java',
+                    inclusionPattern: '**/*.java',
+                    exclusionPattern: '**/test/**'
+                )
             }
         }
     }
