@@ -81,6 +81,10 @@ pipeline {
         }
 
         stage('Sonar Analysis') {
+            environment {
+               SONAR_TOKEN = credentials('java-jenkins-automation-pipeline') // Ensure the correct credential ID
+            }
+
             steps {
                 script {
                     def mvnHome = tool 'Maven3' // Use the Maven tool configured in Jenkins
@@ -90,7 +94,7 @@ pipeline {
                           -Dsonar.projectKey=java-jenkins-automation-pipeline ^
                           -Dsonar.projectName='java-jenkins-automation-pipeline' ^
                           -Dsonar.host.url=http://localhost:9000 ^
-                          -Dsonar.token=sqp_a3a0a49dcc451d12b2eb19e7a43b341c37e69faf
+                          -Dsonar.login=%SONAR_TOKEN%
                         """
                     }
                 }
