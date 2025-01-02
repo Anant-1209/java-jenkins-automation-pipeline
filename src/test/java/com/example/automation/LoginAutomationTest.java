@@ -64,7 +64,7 @@ class LoginAutomationTest {
 
             // Verify we're on the dashboard
             String currentUrl = driver.getCurrentUrl();
-            assertEquals(0, currentUrl.contains("/dashboard"), "Login failed: Not redirected to dashboard");
+            assertEquals(true, currentUrl.contains("/dashboard"), "Login failed: Not redirected to dashboard");
 
         } catch (Exception e) {
             System.err.println("Test failed with error: " + e.getMessage());
