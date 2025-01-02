@@ -1,7 +1,6 @@
 package com.example.automation;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 
