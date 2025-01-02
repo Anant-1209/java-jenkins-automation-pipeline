@@ -17,7 +17,7 @@ pipeline {
                 script {
                     def mvnHome = tool 'Maven3' // Use the Maven tool configured in Jenkins
                     withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
-                        bat 'mvn clean verify'
+                        bat 'mvn clean install' // Use clean install instead of clean verify to ensure build and tests run
                     }
                 }
             }
@@ -32,11 +32,11 @@ pipeline {
                     def mvnHome = tool 'Maven3' // Use the Maven tool configured in Jenkins
                     withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
                         bat """
-                           mvn clean verify sonar:sonar \
+                           mvn sonar:sonar \
                            -Dsonar.projectKey=java-jenkins-automation-pipeline \
                            -Dsonar.projectName='java-jenkins-automation-pipeline' \
                            -Dsonar.host.url=http://localhost:9000 \
-                           -Dsonar.login=%SONAR_TOKEN%
+                           -Dsonar.login=%SONAR_TOKEN% \
                            -Dsonar.jacoco.reportPaths=target/jacoco.xml
                         """
                     }
@@ -44,13 +44,13 @@ pipeline {
             }
         }
 
-        stage('JaCoCo Coverage Report') {
+        stage('Generate JaCoCo Coverage Report') {
             steps {
                 script {
-                    // Generate JaCoCo code coverage report
+                    // Generate JaCoCo code coverage report after tests have run
                     def mvnHome = tool 'Maven3'
                     withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
-                        bat 'mvn jacoco:report'
+                        bat 'mvn jacoco:report' // Generates the coverage report based on jacoco.exec
                     }
                 }
             }
