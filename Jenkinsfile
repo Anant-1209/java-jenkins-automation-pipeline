@@ -63,7 +63,7 @@ pipeline {
                     jacoco(
                         execPattern: '**/target/jacoco.exec', // JaCoCo execution file pattern
                         classPattern: '**/target/classes', // Classes directory pattern
-                        sourcePattern: '**/src/main/java', // Source code directory pattern
+                        sourcePattern: '**/src/test/java', // Source code directory pattern
                         inclusionPattern: '**/*.java', // Include Java files
                         exclusionPattern: '**/test/**' // Exclude test files
                     )
