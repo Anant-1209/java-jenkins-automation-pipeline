@@ -16,7 +16,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-public class LoginAutomationTest {
+class LoginAutomationTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
