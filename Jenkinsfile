@@ -32,13 +32,40 @@ pipeline {
                     def mvnHome = tool 'Maven3' // Use the Maven tool configured in Jenkins
                     withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
                         bat """
-                       mvn clean verify sonar:sonar \
-  -Dsonar.projectKey=java-jenkins-automation-pipeline \
-  -Dsonar.projectName='java-jenkins-automation-pipeline' \
-  -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.login=%SONAR_TOKEN%
+                           mvn clean verify sonar:sonar \
+                           -Dsonar.projectKey=java-jenkins-automation-pipeline \
+                           -Dsonar.projectName='java-jenkins-automation-pipeline' \
+                           -Dsonar.host.url=http://localhost:9000 \
+                           -Dsonar.login=%SONAR_TOKEN%
                         """
                     }
+                }
+            }
+        }
+
+        stage('JaCoCo Coverage Report') {
+            steps {
+                script {
+                    // Generate JaCoCo code coverage report
+                    def mvnHome = tool 'Maven3'
+                    withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
+                        bat 'mvn jacoco:report'
+                    }
+                }
+            }
+        }
+
+        stage('Publish JaCoCo Coverage') {
+            steps {
+                script {
+                    // Publish the JaCoCo code coverage report in Jenkins
+                    jacoco(
+                        execPattern: '**/target/jacoco.exec', // JaCoCo execution file pattern
+                        classPattern: '**/target/classes', // Classes directory pattern
+                        sourcePattern: '**/src/main/java', // Source code directory pattern
+                        inclusionPattern: '**/*.java', // Include Java files
+                        exclusionPattern: '**/test/**' // Exclude test files
+                    )
                 }
             }
         }
@@ -53,4 +80,3 @@ pipeline {
         }
     }
 }
-
