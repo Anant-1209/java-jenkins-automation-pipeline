@@ -38,7 +38,7 @@ class LoginAutomationTest {
     }
 
     @Test
-    public void testLogin() {
+    void testLogin() {
         try {
             // Using a real website for testing (replace with your actual test website)
             driver.get("https://opensource-demo.orangehrmlive.com/");
@@ -64,7 +64,7 @@ class LoginAutomationTest {
 
             // Verify we're on the dashboard
             String currentUrl = driver.getCurrentUrl();
-            assertEquals(true, currentUrl.contains("/dashboard"), "Login failed: Not redirected to dashboard");
+            assertEquals(0, currentUrl.contains("/dashboard"), "Login failed: Not redirected to dashboard");
 
         } catch (Exception e) {
             System.err.println("Test failed with error: " + e.getMessage());
