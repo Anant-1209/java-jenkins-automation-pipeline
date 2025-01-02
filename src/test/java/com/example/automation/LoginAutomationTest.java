@@ -1,6 +1,7 @@
 package com.example.automation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 
@@ -63,8 +64,11 @@ class LoginAutomationTest {
                     ExpectedConditions.presenceOfElementLocated(By.className("oxd-topbar-header")));
 
             // Verify we're on the dashboard
+            // String currentUrl = driver.getCurrentUrl();
+            // assertEquals(true, currentUrl.contains("/dashboard"), "Login failed: Not
+            // redirected to dashboard");
             String currentUrl = driver.getCurrentUrl();
-            assertEquals(true, currentUrl.contains("/dashboard"), "Login failed: Not redirected to dashboard");
+            assertTrue(currentUrl.contains("/dashboard"), "Login failed: Not redirected to dashboard");
 
         } catch (Exception e) {
             System.err.println("Test failed with error: " + e.getMessage());
