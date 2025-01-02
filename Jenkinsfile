@@ -17,7 +17,7 @@ pipeline {
                 script {
                     def mvnHome = tool 'Maven3' // Use the Maven tool configured in Jenkins
                     withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
-                        bat 'mvn clean install' // Use clean install instead of clean verify to ensure build and tests run
+                        bat 'mvn clean install' // Ensure that the build and tests run first
                     }
                 }
             }
@@ -47,10 +47,10 @@ pipeline {
         stage('Generate JaCoCo Coverage Report') {
             steps {
                 script {
-                    // Generate JaCoCo code coverage report after tests have run
+                    // Generate JaCoCo coverage report after tests have run
                     def mvnHome = tool 'Maven3'
                     withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
-                        bat 'mvn jacoco:report' // Generates the coverage report based on jacoco.exec
+                        bat 'mvn clean install jacoco:prepare-agent jacoco:report' // Ensure the classes are compiled and coverage is generated
                     }
                 }
             }
